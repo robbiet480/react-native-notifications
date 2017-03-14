@@ -1,4 +1,8 @@
+import { NativeModules } from "react-native";
+const NativeRNNotifications = NativeModules.RNNotifications; // eslint-disable-line no-unused-vars
+
 export default class IOSNotification {
+  _id: string;
   _data: Object;
   _alert: string | Object;
   _sound: string;
@@ -32,9 +36,17 @@ export default class IOSNotification {
       this._type = "regular";
     }
 
+    this._id = notification.__id;
+
     Object.keys(notification).filter(key => key !== "aps").forEach(key => {
       this._data[key] = notification[key];
     });
+  }
+
+  finish(fetchResult) {
+    if (this._id) {
+      NativeRNNotifications.onFinishRemoteNotification(this._id, fetchResult);
+    }
   }
 
   getMessage(): ?string | ?Object {

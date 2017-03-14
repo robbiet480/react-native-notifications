@@ -10,22 +10,44 @@ public class PushNotificationProps {
         mBundle = new Bundle();
     }
 
-    public PushNotificationProps(String title, String body) {
+    public PushNotificationProps(String title, String body, String sound, String group, int badge) {
         mBundle = new Bundle();
         mBundle.putString("title", title);
         mBundle.putString("body", body);
+        mBundle.putString("sound", sound);
+        mBundle.putString("group", group);
+        mBundle.putInt("badge", badge);
     }
 
     public PushNotificationProps(Bundle bundle) {
         mBundle = bundle;
     }
 
-    public String getTitle() {
-        return mBundle.getString("title");
+    public int getBadge() {
+        if (mBundle.containsKey("badge")) {
+            return mBundle.getInt("badge");
+        }
+        return -1;
     }
+
+    public String getGroup() { return mBundle.getString("group"); }
+
+    public String getSound() { return mBundle.getString("sound"); }
+
+    public String getTitle() { return mBundle.getString("title"); }
 
     public String getBody() {
         return mBundle.getString("body");
+    }
+
+    public boolean isVisible() {
+        String title = getTitle();
+        String sound = getSound();
+        String body = getBody();
+        return  getBadge() >= 0 ||
+                (title != null && !title.isEmpty()) ||
+                (sound != null && !sound.isEmpty()) ||
+                (body != null && !body.isEmpty());
     }
 
     public Bundle asBundle() {
